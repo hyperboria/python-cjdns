@@ -11,7 +11,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
 import os
 import socket
 import hashlib
@@ -21,7 +20,7 @@ import time
 import Queue
 import random
 import string
-from .bencode import *
+from .bencode import bencode, bdecode
 
 BUFFER_SIZE = 69632
 KEEPALIVE_INTERVAL_SECONDS = 2
@@ -204,13 +203,13 @@ def connect(ipAddr, port, password):
 
         # grab all the required args first
         # append all the optional args
-        rargList = [arg for arg,atts in items if atts['required']]
-        argList = rargList + [arg for arg,atts in items if not atts['required']]
+        rargList = [arg for arg, atts in items if atts['required']]
+        argList = rargList + [arg for arg, atts in items if not atts['required']]
 
         # for each optional arg setup a default value with
         # a type which will be ignored by the core.
         oargList = {}
-        for (arg,atts) in items:
+        for (arg, atts) in items:
             if not atts['required']:
                 oargList[arg] = (
                     "''" if (func[arg]['type'] == 'Int')
@@ -250,7 +249,7 @@ def connect(ipAddr, port, password):
     return session
 
 
-def connectWithAdminInfo(path = None):
+def connectWithAdminInfo(path=None):
     """Connect to cjdns admin with data from user file"""
 
     if path is None:
