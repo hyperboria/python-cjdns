@@ -29,8 +29,5 @@ setup(
         'Topic :: System :: Networking'
     ],
     keywords='cjdns',
-    packages=['cjdnsadmin'],
-    extra_require={
-        'package': ['pypandoc']
-    }
+    packages=['cjdnsadmin']
 )
