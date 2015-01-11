@@ -142,7 +142,7 @@ def _getMessage(session, txid):
                 nextMessage = session.queue.get(timeout=100)
             except queue.Empty:
                 continue
-            if 'txid' in next:
+            if 'txid' in nextMessage:
                 session.messages[nextMessage['txid']] = nextMessage
                 # print "adding message [" + str(next) + "]"
             else:
