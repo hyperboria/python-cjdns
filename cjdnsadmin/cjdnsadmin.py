@@ -31,11 +31,11 @@ BUFFER_SIZE = 69632
 KEEPALIVE_INTERVAL_SECONDS = 2
 
 
-class Session():
+class Session:
     """Current cjdns admin session"""
 
-    def __init__(self, socket):
-        self.socket = socket
+    def __init__(self, s):
+        self.socket = s
         self.queue = queue.Queue()
         self.messages = {}
 
@@ -139,14 +139,14 @@ def _getMessage(session, txid):
             try:
                 # apparently any timeout at all allows the thread to be
                 # stopped but none make it unstoppable with ctrl+c
-                next = session.queue.get(timeout=100)
+                nextMessage = session.queue.get(timeout=100)
             except queue.Empty:
                 continue
             if 'txid' in next:
-                session.messages[next['txid']] = next
+                session.messages[nextMessage['txid']] = nextMessage
                 # print "adding message [" + str(next) + "]"
             else:
-                print("message with no txid: %s" % str(next))
+                print("message with no txid: %s" % nextMessage)
 
 
 def _functionFabric(func_name, argList, oargList, password):
