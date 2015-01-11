@@ -5,3 +5,7 @@
 bin/
 include/
 lib/
+
+# setuptools stuff
+dist/
+*.egg-info/
