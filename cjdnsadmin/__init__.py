@@ -1,2 +1,2 @@
 #!/usr/bin/env python3
-from . import cjdnsadmin
+from .cjdnsadmin import connect, connectWithAdminInfo

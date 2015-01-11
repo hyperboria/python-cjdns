@@ -17,10 +17,12 @@ import hashlib
 import json
 import threading
 import time
-import Queue
+import queue
 import random
 import string
-from .bencode import bencode, bdecode
+#from .bencode import bencode, bdecode
+import collections
+from bencodepy import encode, decode
 
 BUFFER_SIZE = 69632
 KEEPALIVE_INTERVAL_SECONDS = 2
@@ -31,7 +33,7 @@ class Session():
 
     def __init__(self, socket):
         self.socket = socket
-        self.queue = Queue.Queue()
+        self.queue = queue.Queue()
         self.messages = {}
 
     def disconnect(self):
@@ -58,7 +60,7 @@ def _callFunc(session, funcName, password, args):
 
     txid = _randomString()
     sock = session.socket
-    sock.send('d1:q6:cookie4:txid10:' + txid + 'e')
+    sock.send(bytearray('d1:q6:cookie4:txid10:%se' % txid, 'utf-8'))
     msg = _getMessage(session, txid)
     cookie = msg['cookie']
     txid = _randomString()
@@ -73,10 +75,10 @@ def _callFunc(session, funcName, password, args):
     if password:
         req['aq'] = req['q']
         req['q'] = 'auth'
-        reqBenc = bencode(req)
+        reqBenc = encode(req)
         req['hash'] = hashlib.sha256(reqBenc).hexdigest()
 
-    reqBenc = bencode(req)
+    reqBenc = encode(req)
     sock.send(reqBenc)
     return _getMessage(session, txid)
 
@@ -92,7 +94,7 @@ def _receiverThread(session):
                 if (timeOfLastRecv + 10 < time.time()):
                     raise Exception("ping timeout")
                 session.socket.send(
-                    'd1:q18:Admin_asyncEnabled4:txid8:keepalive')
+                    b'd1:q18:Admin_asyncEnabled4:txid8:keepalive')
                 timeOfLastSend = time.time()
 
             try:
@@ -134,13 +136,13 @@ def _getMessage(session, txid):
                 # apparently any timeout at all allows the thread to be
                 # stopped but none make it unstoppable with ctrl+c
                 next = session.queue.get(timeout=100)
-            except Queue.Empty:
+            except queue.Empty:
                 continue
             if 'txid' in next:
                 session.messages[next['txid']] = next
                 # print "adding message [" + str(next) + "]"
             else:
-                print "message with no txid: " + str(next)
+                print("message with no txid: %s" % str(next))
 
 
 def _functionFabric(func_name, argList, oargList, password):
@@ -165,6 +167,25 @@ def _functionFabric(func_name, argList, oargList, password):
     return functionHandler
 
 
+def mkdict(item):
+    item = dict(item)
+    newitem = {}
+    for subitem in item:
+        if type(item[subitem]) == collections.OrderedDict:
+            newitem[subitem.decode("utf-8")] = mkdict(item[subitem])
+        else:
+            newitem[subitem.decode("utf-8")] = item[subitem]
+    return newitem
+
+
+def bdecode(data):
+    decoded = decode(data)
+    asDict = mkdict(decoded)
+    print(asDict)
+    print("\n")
+    return asDict
+
+
 def connect(ipAddr, port, password):
     """Connect to cjdns admin with this attributes"""
 
@@ -173,9 +194,9 @@ def connect(ipAddr, port, password):
     sock.settimeout(2)
 
     # Make sure it pongs.
-    sock.send('d1:q4:pinge')
+    sock.send(b'd1:q4:pinge')
     data = sock.recv(BUFFER_SIZE)
-    if (not data.endswith('1:q4:ponge')):
+    if (not data.endswith(b'1:q4:ponge')):
         raise Exception(
             "Looks like " + ipAddr + ":" + str(port) +
             " is to a non-cjdns socket.")
@@ -184,9 +205,9 @@ def connect(ipAddr, port, password):
     page = 0
     availableFunctions = {}
     while True:
-        sock.send(
-            'd1:q24:Admin_availableFunctions4:argsd4:pagei' +
-            str(page) + 'eee')
+        sock.send(bytearray(
+            'd1:q24:Admin_availableFunctions4:argsd4:pagei%seee' % page,
+            'utf-8'))
         data = sock.recv(BUFFER_SIZE)
         benc = bdecode(data)
         for func in benc['availableFunctions']:
