@@ -17,11 +17,14 @@ import hashlib
 import json
 import threading
 import time
-import queue
+try:
+    import queue
+except ImportError:
+    import Queue as queue
 import random
 import string
 from .bencode import bencode, bdecode
-import collections
+
 #from bencodepy import encode, decode
 
 BUFFER_SIZE = 69632

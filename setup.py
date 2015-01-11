@@ -16,7 +16,7 @@ def readme(fname):
 
 setup(
     name='cjdnsadmin',
-    version='0.1.0',
+    version='0.1.1',
     description='A library to interact with the cjdns Admin Interface',
     long_description=readme('README.md'),
     url='https://github.com/thefinn93/cjdnsadmin',
