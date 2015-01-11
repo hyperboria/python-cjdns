@@ -31,7 +31,7 @@ BUFFER_SIZE = 69632
 KEEPALIVE_INTERVAL_SECONDS = 2
 
 
-class Session:
+class Session(object):
     """Current cjdns admin session"""
 
     def __init__(self, s):
@@ -197,7 +197,7 @@ def connect(ipAddr, port, password):
         benc = bdecode(data)
         for func in benc['availableFunctions']:
             availableFunctions[func] = benc['availableFunctions'][func]
-        if (not 'more' in benc):
+        if 'more' not in benc:
             break
         page = page+1
 
