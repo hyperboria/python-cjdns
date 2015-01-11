@@ -1,146 +1,121 @@
-# Written by Petru Paler
-# see LICENSE.txt for license information
-# http://cvs.degreez.net/viewcvs.cgi/*checkout*/bittornado/LICENSE.txt?rev=1.2
-# "the MIT license"
+#!/usr/bin/python2
+# -*- coding: utf-8 -*-
+# Stolen from https://gist.github.com/pyropeter/642505 - no license attached
+import collections
 
 
-def decode_int(x, f):
-    f += 1
-    newf = x.index('e', f)
-    try:
-        n = int(x[f:newf])
-    except (OverflowError, ValueError):
-        n = long(x[f:newf])
-    if x[f] == '-':
-        if x[f + 1] == '0':
-            raise ValueError
-    elif x[f] == '0' and newf != f+1:
-        raise ValueError
-    return (n, newf+1)
+def bencode(obj):
+    if isinstance(obj, int):
+        return "i" + str(obj) + "e"
+
+    if isinstance(obj, str):
+        return str(len(obj)) + ":" + obj
+
+    if isinstance(obj, list):
+        res = "l"
+        for elem in obj:
+            res += bencode(elem)
+        return res + "e"
+
+    if isinstance(obj, dict):
+        res = "d"
+        for key in sorted(obj.keys()):
+            res += bencode(key) + bencode(obj[key])
+        return res + "e"
+
+    if isinstance(obj, collections.OrderedDict):
+        return bencode(dict(obj))
+    raise Exception("Unknown object: %s" % repr(obj))
 
 
-def decode_string(x, f):
-    colon = x.index(':', f)
-    try:
-        n = int(x[f:colon])
-    except (OverflowError, ValueError):
-        n = (x[f:colon])
-# Leading zeros are FINE --cjd
-#    if x[f] == '0' and colon != f+1:
-#        raise ValueError
-    colon += 1
-    return (x[colon:colon+n], colon+n)
+def bdecode(text):
+    text = text.decode('utf-8')
 
+    def bdecode_next(start):
+        if text[start] == 'i':
+            end = text.find('e', start)
+            return int(text[start+1:end], 10), end + 1
 
-def decode_list(x, f):
-    r, f = [], f+1
-    while x[f] != 'e':
-        v, f = decode_func[x[f]](x, f)
-        r.append(v)
-    return (r, f + 1)
+        if text[start] == 'l':
+            res = []
+            start += 1
+            while text[start] != 'e':
+                elem, start = bdecode_next(start)
+                res.append(elem)
+            return res, start + 1
 
+        if text[start] == 'd':
+            res = {}
+            start += 1
+            while text[start] != 'e':
+                key, start = bdecode_next(start)
+                value, start = bdecode_next(start)
+                res[key] = value
+            return res, start + 1
 
-def decode_dict(x, f):
-    r, f = {}, f+1
-    lastkey = None
-    while x[f] != 'e':
-        k, f = decode_string(x, f)
-        if lastkey >= k:
-            raise ValueError
-        lastkey = k
-        r[k], f = decode_func[x[f]](x, f)
-    return (r, f + 1)
+        lenend = text.find(':', start)
+        length = int(text[start:lenend], 10)
+        end = lenend + length + 1
+        return text[lenend+1:end], end
+    result = bdecode_next(0)[0]
+    print("<<<<<<<")
+    print(result)
+    print("\n")
+    return result
 
-decode_func = {}
-decode_func['l'] = decode_list
-decode_func['d'] = decode_dict
-decode_func['i'] = decode_int
-decode_func['0'] = decode_string
-decode_func['1'] = decode_string
-decode_func['2'] = decode_string
-decode_func['3'] = decode_string
-decode_func['4'] = decode_string
-decode_func['5'] = decode_string
-decode_func['6'] = decode_string
-decode_func['7'] = decode_string
-decode_func['8'] = decode_string
-decode_func['9'] = decode_string
+# assert bdecode("i42e") == 42
+# assert bdecode("3:foo") == 'foo'
+# assert bdecode("li42ei1337ee") == [42, 1337]
+# assert bdecode("li42eli42e3:baree") == [42, [42, 'bar']]
+# assert bdecode("d3:fooli42eee") == {'foo': [42]}
+# assert "i42e" == bencode(42)
+# assert "3:foo" == bencode('foo')
+# assert "li42ei1337ee" == bencode([42, 1337])
+# assert "li42eli42e3:baree" == bencode([42, [42, 'bar']])
+# assert "d3:fooli42eee" == bencode({'foo': [42]})
 
+if __name__ == '__main__':
+    import sys
+    import getopt
+    optlist, args = getopt.getopt(sys.argv[1:], 'de')
 
-def bdecode_stream(x):
-    return decode_func[x[0]](x, 0)
+    if ('-e', '') in optlist:
+        from tempfile import NamedTemporaryFile
+        import pprint
+        import os
 
+        if not len(args):
+            raise Exception("No file name given")
+        inoutfile = open(args[0], "r")
 
-def bdecode(x):
-    try:
-        r, l = bdecode_stream(x)
-    except (IndexError, KeyError):
-        raise ValueError
-    if l != len(x):
-        raise ValueError
-    return r
+        tmpfile = NamedTemporaryFile('w', delete=False)
 
+        content = bdecode(inoutfile.read())
+        pprint.pprint(content, tmpfile, 2)
+        tmpfile.write('\n')
+        tmpfile.close()
+        inoutfile.close()
 
-class Bencached(object):
-    __slots__ = ['bencoded']
+        os.system("vim %s" % (tmpfile.name))
 
-    def __init__(self, s):
-        self.bencoded = s
+        content = eval(open(tmpfile.name).read())
+        inoutfile = open(args[0], "w")
+        inoutfile.write(bencode(content))
+        inoutfile.close()
 
+        os.remove(tmpfile.name)
+    else:
+        if len(args) and args[0] != '-':
+            filehandle = open(args[0], "r")
+        else:
+            filehandle = sys.stdin
 
-def encode_bencached(x, r):
-    r.append(x.bencoded)
+        if ('-d', '') in optlist:
+            import pprint
+            content = bdecode(filehandle.read())
+            pprint.PrettyPrinter(indent=2).pprint(content)
+        else:
+            content = eval(filehandle.read())
+            print(bencode(content))
 
-
-def encode_int(x, r):
-    r.extend(('i', str(x), 'e'))
-
-
-def encode_string(x, r):
-    r.extend((str(len(x)), ':', x))
-
-
-def encode_list(x, r):
-    r.append('l')
-    for i in x:
-        encode_func[type(i)](i, r)
-    r.append('e')
-
-
-def encode_dict(x, r):
-    r.append('d')
-    ilist = x.items()
-    ilist.sort()
-    for k, v in ilist:
-        r.extend((str(len(k)), ':', k))
-        encode_func[type(v)](v, r)
-    r.append('e')
-
-encode_func = {}
-encode_func[type(Bencached(0))] = encode_bencached
-encode_func[int] = encode_int
-#encode_func[] = encode_int
-encode_func[str] = encode_string
-encode_func[list] = encode_list
-encode_func[tuple] = encode_list
-encode_func[dict] = encode_dict
-
-try:
-    from types import BooleanType
-    encode_func[BooleanType] = encode_int
-except ImportError:
-    pass
-
-
-def bencode(x):
-    r = []
-    encode_func[type(x)](x, r)
-    return ''.join(r)
-
-
-try:
-    import psyco
-    psyco.bind(bdecode)
-    psyco.bind(bencode)
-except ImportError:
-    pass
+# vim: set ts=4 sw=4 et:

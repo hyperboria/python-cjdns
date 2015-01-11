@@ -20,9 +20,9 @@ import time
 import queue
 import random
 import string
-#from .bencode import bencode, bdecode
+from .bencode import bencode, bdecode
 import collections
-from bencodepy import encode, decode
+#from bencodepy import encode, decode
 
 BUFFER_SIZE = 69632
 KEEPALIVE_INTERVAL_SECONDS = 2
@@ -64,9 +64,10 @@ def _callFunc(session, funcName, password, args):
     msg = _getMessage(session, txid)
     cookie = msg['cookie']
     txid = _randomString()
+    tohash = (password + cookie).encode('utf-8')
     req = {
         'q': funcName,
-        'hash': hashlib.sha256(password + cookie).hexdigest(),
+        'hash': hashlib.sha256(tohash).hexdigest(),
         'cookie': cookie,
         'args': args,
         'txid': txid
@@ -75,11 +76,11 @@ def _callFunc(session, funcName, password, args):
     if password:
         req['aq'] = req['q']
         req['q'] = 'auth'
-        reqBenc = bencode(req)
+        reqBenc = bencode(req).encode('utf-8')
         req['hash'] = hashlib.sha256(reqBenc).hexdigest()
 
     reqBenc = bencode(req)
-    sock.send(reqBenc)
+    sock.send(bytearray(reqBenc, 'utf-8'))
     return _getMessage(session, txid)
 
 
@@ -167,31 +168,31 @@ def _functionFabric(func_name, argList, oargList, password):
     return functionHandler
 
 
-def mkdict(item):
-    item = dict(item)
-    newitem = {}
-    for subitem in item:
-        if type(item[subitem]) == collections.OrderedDict:
-            newitem[subitem.decode("utf-8")] = mkdict(item[subitem])
-        else:
-            newitem[subitem.decode("utf-8")] = item[subitem]
-    return newitem
-
-
-def bdecode(data):
-    decoded = decode(data)
-    asDict = mkdict(decoded)
-    print("<<<<<<<<<<")
-    print(asDict)
-    print("\n")
-    return asDict
-
-
-def bencode(data):
-    print(">>>>>>>>>>")
-    print(data)
-    print("\n")
-    return encode(data)
+# def mkdict(item):
+#     item = dict(item)
+#     newitem = {}
+#     for subitem in item:
+#         if type(item[subitem]) == collections.OrderedDict:
+#             newitem[subitem.decode("utf-8")] = mkdict(item[subitem])
+#         else:
+#             newitem[subitem.decode("utf-8")] = item[subitem]
+#     return newitem
+#
+#
+# def bdecode(data):
+#     decoded = decode(data)
+#     asDict = mkdict(decoded)
+#     print("<<<<<<<<<<")
+#     print(asDict)
+#     print("\n")
+#     return asDict
+#
+#
+# def bencode(data):
+#     print(">>>>>>>>>>")
+#     print(data)
+#     print("\n")
+#     return encode(data)
 
 
 def connect(ipAddr, port, password):
