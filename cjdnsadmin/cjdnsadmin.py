@@ -75,10 +75,10 @@ def _callFunc(session, funcName, password, args):
     if password:
         req['aq'] = req['q']
         req['q'] = 'auth'
-        reqBenc = encode(req)
+        reqBenc = bencode(req)
         req['hash'] = hashlib.sha256(reqBenc).hexdigest()
 
-    reqBenc = encode(req)
+    reqBenc = bencode(req)
     sock.send(reqBenc)
     return _getMessage(session, txid)
 
@@ -181,9 +181,17 @@ def mkdict(item):
 def bdecode(data):
     decoded = decode(data)
     asDict = mkdict(decoded)
+    print("<<<<<<<<<<")
     print(asDict)
     print("\n")
     return asDict
+
+
+def bencode(data):
+    print(">>>>>>>>>>")
+    print(data)
+    print("\n")
+    return encode(data)
 
 
 def connect(ipAddr, port, password):
