@@ -168,33 +168,6 @@ def _functionFabric(func_name, argList, oargList, password):
     return functionHandler
 
 
-# def mkdict(item):
-#     item = dict(item)
-#     newitem = {}
-#     for subitem in item:
-#         if type(item[subitem]) == collections.OrderedDict:
-#             newitem[subitem.decode("utf-8")] = mkdict(item[subitem])
-#         else:
-#             newitem[subitem.decode("utf-8")] = item[subitem]
-#     return newitem
-#
-#
-# def bdecode(data):
-#     decoded = decode(data)
-#     asDict = mkdict(decoded)
-#     print("<<<<<<<<<<")
-#     print(asDict)
-#     print("\n")
-#     return asDict
-#
-#
-# def bencode(data):
-#     print(">>>>>>>>>>")
-#     print(data)
-#     print("\n")
-#     return encode(data)
-
-
 def connect(ipAddr, port, password):
     """Connect to cjdns admin with this attributes"""
 

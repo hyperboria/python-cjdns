@@ -57,11 +57,7 @@ def bdecode(text):
         length = int(text[start:lenend], 10)
         end = lenend + length + 1
         return text[lenend+1:end], end
-    result = bdecode_next(0)[0]
-    print("<<<<<<<")
-    print(result)
-    print("\n")
-    return result
+    return bdecode_next(0)[0]
 
 # assert bdecode("i42e") == 42
 # assert bdecode("3:foo") == 'foo'
