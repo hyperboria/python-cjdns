@@ -19,10 +19,12 @@ import threading
 import time
 try:
     import queue
+    buffer = memoryview
 except ImportError:
     import Queue as queue
 import random
 import string
+from hashlib import sha512
 from .bencode import bencode, bdecode
 
 #from bencodepy import encode, decode
@@ -276,3 +278,58 @@ def connectWithAdminInfo(path=None):
         raise
 
     return connect(data['addr'], data['port'], data['password'])
+
+
+def Base32_decode(decodeme):
+    output = bytearray(len(decodeme))
+    numForAscii = [
+        99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
+        99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
+        99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 99, 99, 99, 99, 99, 99,
+        99, 99, 10, 11, 12, 99, 13, 14, 15, 99, 16, 17, 18, 19, 20, 99,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99, 99, 99, 99, 99,
+        99, 99, 10, 11, 12, 99, 13, 14, 15, 99, 16, 17, 18, 19, 20, 99,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99, 99, 99, 99, 99,
+    ]
+
+    outputIndex = 0
+    inputIndex = 0
+    nextByte = 0
+    bits = 0
+
+    while (inputIndex < len(decodeme)):
+        o = ord(decodeme[inputIndex])
+        if (o & 0x80):
+            raise ValueError
+        b = numForAscii[o]
+        inputIndex += 1
+        if (b > 31):
+            raise ValueError("bad character " + decodeme[inputIndex])
+
+        nextByte |= (b << bits)
+        bits += 5
+
+        if (bits >= 8):
+            output[outputIndex] = nextByte & 0xff
+            outputIndex += 1
+            bits -= 8
+            nextByte >>= 8
+
+    if (bits >= 5 or nextByte):
+        raise ValueError("bits is %s and nextByte is %s" % (bits, nextByte))
+
+    return memoryview(output)[0:outputIndex]
+
+
+def PublicToIp6(pubKey):
+    if (pubKey[-2:] != ".k"):
+        raise ValueError("key does not end with .k")
+    keyBytes = Base32_decode(pubKey[0:-2])
+    hashOne = sha512(keyBytes).digest()
+    hashTwo = sha512(hashOne).hexdigest()
+    first16 = hashTwo[0:32]
+    out = ''
+    for i in range(0, 8):
+        out += first16[i*4: i*4+4] + ":"
+    return out[:-1]
