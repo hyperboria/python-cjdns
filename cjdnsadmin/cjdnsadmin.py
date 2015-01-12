@@ -19,7 +19,6 @@ import threading
 import time
 try:
     import queue
-    buffer = memoryview
 except ImportError:
     import Queue as queue
 import random
