@@ -23,9 +23,12 @@ def bencode(obj):
             res += bencode(key) + bencode(obj[key])
         return res + "e"
 
+    if isinstance(obj, unicode):
+        return bencode(obj.encode('utf-8'))
+
     if isinstance(obj, collections.OrderedDict):
         return bencode(dict(obj))
-    raise Exception("Unknown object: %s" % repr(obj))
+    raise Exception("Unknown object: %s (%s)" % (repr(obj), repr(type(obj))))
 
 
 def bdecode(text):

@@ -168,7 +168,7 @@ def _functionFabric(func_name, argList, oargList, password):
 
         return _callFunc(self, func_name, password, call_args)
 
-    functionHandler.__name__ = func_name
+    functionHandler.__name__ = str(func_name)
     return functionHandler
 
 
