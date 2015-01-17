@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Stolen from https://gist.github.com/pyropeter/642505 - no license attached
 import collections

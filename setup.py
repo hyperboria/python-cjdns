@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from setuptools import setup
 import os
@@ -16,7 +16,7 @@ def readme(fname):
 
 setup(
     name='cjdnsadmin',
-    version='0.1.3',
+    version='0.1.4',
     description='A library to interact with the cjdns Admin Interface',
     long_description=readme('README.md'),
     url='https://github.com/thefinn93/cjdnsadmin',
