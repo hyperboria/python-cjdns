@@ -10,3 +10,6 @@ build/
 # setuptools stuff
 dist/
 *.egg-info/
+
+# Tox
+.tox/
