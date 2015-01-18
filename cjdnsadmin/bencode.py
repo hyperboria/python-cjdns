@@ -1,10 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Stolen from https://gist.github.com/pyropeter/642505 - no license attached
+"""Bencode library, for bencoding and bdecoding python objects"""
+
 import collections
 
 
 def bencode(obj):
+    """Bencodes obj and returns it as a string"""
     if isinstance(obj, int):
         return "i" + str(obj) + "e"
 
@@ -32,9 +35,11 @@ def bencode(obj):
 
 
 def bdecode(text):
+    """Decodes a bencoded bytearray and returns it as a python object"""
     text = text.decode('utf-8')
 
     def bdecode_next(start):
+        """bdecode helper function"""
         if text[start] == 'i':
             end = text.find('e', start)
             return int(text[start+1:end], 10), end + 1

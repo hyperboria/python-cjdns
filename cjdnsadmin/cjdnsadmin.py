@@ -10,6 +10,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""cjdnsadmin is a library for communicating with the cjdns admin interface"""
+
 
 import os
 import socket
@@ -41,13 +43,15 @@ class Session(object):
         self.messages = {}
 
     def disconnect(self):
+        """Disconnects the socket"""
         self.socket.close()
 
     def getMessage(self, txid):
-        # print self, txid
+        """Retreives the message associatd with txid"""
         return _getMessage(self, txid)
 
     def functions(self):
+        """Prints a list of functions available"""
         print(self._functions)
 
 
@@ -95,8 +99,8 @@ def _receiverThread(session):
     timeOfLastRecv = time.time()
     try:
         while True:
-            if (timeOfLastSend + KEEPALIVE_INTERVAL_SECONDS < time.time()):
-                if (timeOfLastRecv + 10 < time.time()):
+            if timeOfLastSend + KEEPALIVE_INTERVAL_SECONDS < time.time():
+                if timeOfLastRecv + 10 < time.time():
                     raise Exception("ping timeout")
                 session.socket.send(
                     b'd1:q18:Admin_asyncEnabled4:txid8:keepalive')
@@ -104,7 +108,7 @@ def _receiverThread(session):
 
             try:
                 data = session.socket.recv(BUFFER_SIZE)
-            except (socket.timeout):
+            except socket.timeout:
                 continue
 
             try:
@@ -160,7 +164,7 @@ def _functionFabric(func_name, argList, oargList, password):
             call_args[key] = value
 
         for i, arg in enumerate(argList):
-            if (i < len(args)):
+            if i < len(args):
                 call_args[arg] = args[i]
 
         for (key, value) in kwargs.items():
@@ -182,7 +186,7 @@ def connect(ipAddr, port, password):
     # Make sure it pongs.
     sock.send(b'd1:q4:pinge')
     data = sock.recv(BUFFER_SIZE)
-    if (not data.endswith(b'1:q4:ponge')):
+    if not data.endswith(b'1:q4:ponge'):
         raise Exception(
             "Looks like " + ipAddr + ":" + str(port) +
             " is to a non-cjdns socket.")
@@ -219,7 +223,7 @@ def connect(ipAddr, port, password):
         for (arg, atts) in items:
             if not atts['required']:
                 oargList[arg] = (
-                    "''" if (func[arg]['type'] == 'Int')
+                    "''" if func[arg]['type'] == 'Int'
                     else "0")
 
         setattr(Session, i, _functionFabric(
@@ -236,7 +240,7 @@ def connect(ipAddr, port, password):
 
     # Check our password.
     ret = _callFunc(session, "ping", password, {})
-    if ('error' in ret):
+    if 'error' in ret:
         raise Exception(
             "Connect failed, incorrect admin password?\n" + str(ret))
 
@@ -244,9 +248,9 @@ def connect(ipAddr, port, password):
 
     funcOargs_c = {}
     for func in funcOargs:
-        funcOargs_c[func] = list(
-            [key + "=" + str(value)
-                for (key, value) in funcOargs[func].items()])
+        funcOargs_c[func] = list([
+            key + "=" + str(value) for (key, value) in funcOargs[func].items()
+        ])
 
     for func in availableFunctions:
         session._functions += (
@@ -297,32 +301,32 @@ def Base32_decode(decodeme):
     nextByte = 0
     bits = 0
 
-    while (inputIndex < len(decodeme)):
+    while inputIndex < len(decodeme):
         o = ord(decodeme[inputIndex])
-        if (o & 0x80):
+        if o & 0x80:
             raise ValueError
         b = numForAscii[o]
         inputIndex += 1
-        if (b > 31):
+        if b > 31:
             raise ValueError("bad character " + decodeme[inputIndex])
 
         nextByte |= (b << bits)
         bits += 5
 
-        if (bits >= 8):
+        if bits >= 8:
             output[outputIndex] = nextByte & 0xff
             outputIndex += 1
             bits -= 8
             nextByte >>= 8
 
-    if (bits >= 5 or nextByte):
+    if bits >= 5 or nextByte:
         raise ValueError("bits is %s and nextByte is %s" % (bits, nextByte))
 
     return memoryview(output)[0:outputIndex]
 
 
 def PublicToIp6(pubKey):
-    if (pubKey[-2:] != ".k"):
+    if pubKey[-2:] != ".k":
         raise ValueError("key does not end with .k")
     keyBytes = Base32_decode(pubKey[0:-2])
     hashOne = sha512(keyBytes).digest()
