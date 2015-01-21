@@ -28,8 +28,6 @@ import string
 from hashlib import sha512
 from .bencode import bencode, bdecode
 
-#from bencodepy import encode, decode
-
 BUFFER_SIZE = 69632
 KEEPALIVE_INTERVAL_SECONDS = 2
 
@@ -215,7 +213,8 @@ def connect(ipAddr, port, password):
         # grab all the required args first
         # append all the optional args
         rargList = [arg for arg, atts in items if atts['required']]
-        argList = rargList + [arg for arg, atts in items if not atts['required']]
+        argList = rargList + [
+            arg for arg, atts in items if not atts['required']]
 
         # for each optional arg setup a default value with
         # a type which will be ignored by the core.
