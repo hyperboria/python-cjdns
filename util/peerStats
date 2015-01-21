@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+import cjdnsadmin
+try:
+    from prettytable import PrettyTable
+except ImportError:
+    import sys
+    sys.stderr.write("""This utility requires prettytable, please install it.
+    You can do:
+        $ pip install prettytable
+    or go download it from https://code.google.com/p/prettytable/\n""")
+    sys.exit()
+
+cjdns = cjdnsadmin.connectWithAdminInfo()
+table = PrettyTable([
+    'Public Key',
+    'state',
+    'user',
+    'Bytes In',
+    'Bytes Out',
+    'Switch Label',
+    'Duplicates',
+    'Received Out Of Range',
+    'last',
+    'Is Incoming'])
+
+i = 0
+more = True
+while more:
+    page = cjdns.InterfaceController_peerStats(i)
+    for peer in page['peers']:
+        user = "-"
+        if "user" in peer:
+            user = peer['user']
+        table.add_row([
+            peer['publicKey'],
+            peer['state'],
+            user,
+            peer['bytesIn'],
+            peer['bytesOut'],
+            peer['switchLabel'],
+            peer['duplicates'],
+            peer['receivedOutOfRange'],
+            peer['last'],
+            peer['isIncoming']
+            ])
+    i += 1
+    more = 'more' in page
+
+print(table)
