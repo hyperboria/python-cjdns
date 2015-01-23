@@ -20,7 +20,8 @@ table = PrettyTable([
     'Switch Label',
     'Duplicates',
     'Received Out Of Range',
-    'last',
+    'Last',
+    'Version',
     'Is Incoming'])
 
 i = 0
@@ -41,6 +42,7 @@ while more:
             peer['duplicates'],
             peer['receivedOutOfRange'],
             peer['last'],
+            peer['version'],
             peer['isIncoming']
             ])
     i += 1
