@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import cjdnsadmin
+import argparse
 try:
     from prettytable import PrettyTable
 except ImportError:
@@ -10,9 +11,21 @@ except ImportError:
     or go download it from https://code.google.com/p/prettytable/\n""")
     sys.exit()
 
+parser = argparse.ArgumentParser(description='Display stats about your peers.')
+parser.add_argument('--pubkeys', '-p', dest='pubkeys', action='store_true',
+                    help="Don't convert public keys into IP addresses")
+parser.add_argument('--ips', '-i', dest='pubkeys', action='store_false',
+                    help="Convert public keys into IP addresses")
+parser.set_defaults(pubkeys=False)
+args = parser.parse_args()
+
+firstcolheader = 'Public Key'
+if not args.pubkeys:
+    firstcolheader = 'cjdns IP'
+
 cjdns = cjdnsadmin.connectWithAdminInfo()
 table = PrettyTable([
-    'Public Key',
+    firstcolheader,
     'state',
     'user',
     'Bytes In',
@@ -32,8 +45,11 @@ while more:
         user = "-"
         if "user" in peer:
             user = peer['user']
+        key = peer['publicKey']
+        if not args.pubkeys:
+            key = cjdnsadmin.PublicToIp6(peer['publicKey'])
         table.add_row([
-            peer['publicKey'],
+            key,
             peer['state'],
             user,
             peer['bytesIn'],
