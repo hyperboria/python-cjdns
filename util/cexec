@@ -1,0 +1,18 @@
+#!/usr/bin/env python
+import cjdnsadmin
+import argparse
+import json
+# import sys
+
+parser = argparse.ArgumentParser(description='Send commands to cjdns')
+parser.add_argument('command', metavar='command()',
+                    help='The command to send to cjdns')
+
+args = parser.parse_args()
+
+
+cjdns = cjdnsadmin.connectWithAdminInfo()
+result = eval("cjdns.%s" % args.command)
+
+if args.command != "functions()":
+    print(json.dumps(result, indent=2, separators=(',', ': ')))
