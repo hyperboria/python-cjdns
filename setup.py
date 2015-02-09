@@ -10,12 +10,15 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""Basic setup.py file to install and README from markdown to rst"""
+
 
 from setuptools import setup
 import os
 
 
 def readme(fname):
+    """Reads a markdown file and returns the contents formatted as rst"""
     md = open(os.path.join(os.path.dirname(__file__), fname)).read()
     output = md
     try:
