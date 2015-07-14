@@ -29,18 +29,23 @@ def bencode(obj):
         return "i" + str(obj) + "e"
 
     if isinstance(obj, str):
+        if not obj:
+            return None
         return str(len(obj)) + ":" + obj
 
     if isinstance(obj, list):
         res = "l"
         for elem in obj:
-            res += bencode(elem)
+            elem = bencode(elem)
+            if elem:
+                res += elem
         return res + "e"
 
     if isinstance(obj, dict):
         res = "d"
         for key in sorted(obj.keys()):
-            res += bencode(key) + bencode(obj[key])
+            if obj[key]:
+                res += bencode(key) + bencode(obj[key])
         return res + "e"
 
     if isinstance(obj, unicode):
