@@ -225,7 +225,7 @@ def connect(ipAddr, port, password):
             if not atts['required']:
                 oargList[arg] = (
                     "''" if func[arg]['type'] == 'Int'
-                    else "0")
+                    else "")
 
         setattr(Session, i, _functionFabric(
             i, argList, oargList, password))
