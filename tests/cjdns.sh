@@ -19,5 +19,5 @@ cd cjdns
 echo "Generating, cleaning conf"
 ./cjdroute --genconf | ./cjdroute --cleanconf > ~/cjdroute.conf
 ./cjdroute < ~/cjdroute.conf
-python2 contrib/python/cjdnsadminmaker.py
+python2 contrib/python/cjdnsadminmaker.py ~/.cjdnsadmin
 ./tools/cexec 'ping()'
