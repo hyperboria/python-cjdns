@@ -1,6 +1,6 @@
 # cjdnsadmin For Python 2 & 3
 
-[![Build Status](https://travis-ci.org/hyperboria/cjdnsadmin.svg?branch=master)](https://travis-ci.org/hyperboria/cjdnsadmin)
+[![Build Status](https://travis-ci.org/hyperboria/python-cjdns.svg?branch=master)](https://travis-ci.org/hyperboria/python-cjdns)
 [![Code Health](https://landscape.io/github/hyperboria/python-cjdns/master/landscape.svg)](https://landscape.io/github/hyperboria/python-cjdns/master)
 [![PyPI](https://img.shields.io/pypi/v/cjdnsadmin.svg)](https://pypi.python.org/pypi/cjdnsadmin)
 
