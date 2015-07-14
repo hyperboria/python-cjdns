@@ -12,8 +12,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """cjdnsadmin is a library for communicating with the cjdns admin interface"""
 
+from __future__ import print_function
 
 import os
+import sys
 import socket
 import hashlib
 import json
@@ -268,16 +270,12 @@ def connectWithAdminInfo(path=None):
         with open(path, 'r') as adminInfo:
             data = json.load(adminInfo)
     except IOError:
-        print('Please create a file named .cjdnsadmin in your ')
-        print('home directory with')
-        print('ip, port, and password of your cjdns engine in json.')
-        print('for example:')
-        print('{')
-        print('    "addr": "127.0.0.1",')
-        print('    "port": 11234,')
-        print('    "password": "You tell me! (Search in ~/cjdroute.conf)"')
-        print('}')
-        raise
+        print('~/.cjdnsadmin not found; using default credentials', file=sys.stderr)
+        data = {
+            'password': 'NONE',
+            'addr': '127.0.0.1',
+            'port': 11234,
+        }
 
     return connect(data['addr'], data['port'], data['password'])
 
