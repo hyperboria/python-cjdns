@@ -29,11 +29,11 @@ def readme(fname):
     return output
 
 setup(
-    name='cjdnsadmin',
+    name='cjdns',
     version='0.1.6',
     description='A library to interact with the cjdns Admin Interface',
     long_description=readme('README.md'),
-    url='https://github.com/thefinn93/cjdnsadmin',
+    url='https://github.com/hyperboria/python-cjdns',
     author='Finn Herzfeld',
     author_email='finn@seattlemesh.net',
     license='GPLv3',
@@ -43,6 +43,6 @@ setup(
         'Topic :: System :: Networking'
     ],
     keywords='cjdns',
-    packages=['cjdnsadmin'],
+    packages=['cjdns'],
     scripts=['util/peerStats']
 )

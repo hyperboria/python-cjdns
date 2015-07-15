@@ -10,13 +10,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-"""cjdnsadmin
+"""cjdns
 Allows communication with an instance of cjdns via the admin/RPC port.
 
 Usage:
 
-import cjdnsadmin
-cjdns = cjdnsadmin.connectWithAdminInfo()
+import cjdns
+cjdns = cjdns.connectWithAdminInfo()
 
 """
-from .cjdnsadmin import connect, connectWithAdminInfo, PublicToIp6
+from .cjdns import connect, connectWithAdminInfo, PublicToIp6
