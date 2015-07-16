@@ -12,8 +12,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 echo "Installing cjdns..."
-git clone https://github.com/cjdelisle/cjdns
-cd cjdns
+git clone https://github.com/cjdelisle/cjdns cjdns-code
+cd cjdns-code
 ./do
 
 echo "Generating, cleaning conf"
