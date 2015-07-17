@@ -45,7 +45,11 @@ def bencode(obj):
         res = "d"
         for key in sorted(obj.keys()):
             if key in obj:
-                res += bencode(key) + bencode(obj[key])
+                value = bencode(obj[key])
+                key = bencode(key)
+                if key and value:
+                    res += key + value
+
         return res + "e"
 
     if isinstance(obj, unicode):
