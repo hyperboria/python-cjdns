@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import cjdnsadmin
+import cjdns
 import argparse
 import json
 
@@ -22,7 +22,7 @@ parser.add_argument('command', metavar='command()',
 args = parser.parse_args()
 
 
-cjdns = cjdnsadmin.connectWithAdminInfo()
+cjdns = cjdns.connectWithAdminInfo()
 result = eval("cjdns.%s" % args.command)
 
 if args.command != "functions()":

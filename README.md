@@ -1,4 +1,4 @@
-# cjdnsadmin For Python 2 & 3
+# python-cjdns For Python 2 & 3
 
 [![Build Status](https://travis-ci.org/hyperboria/python-cjdns.svg?branch=master)](https://travis-ci.org/hyperboria/python-cjdns)
 [![Code Health](https://landscape.io/github/hyperboria/python-cjdns/master/landscape.svg)](https://landscape.io/github/hyperboria/python-cjdns/master)
@@ -12,27 +12,27 @@ Installation
 =======
 The easiest way to install it is:
 
-    pip install cjdnsadmin
+    pip install cjdns
 
 But you could also clone it and run:
 
     python setup.py install
 
-Once it's installed, you'll find `peerStats` and `cexec` installed in your `$PATH`, and the `cjdnsadmin` library available for import.
+Once it's installed, you'll find `peerStats` and `cexec` installed in your `$PATH`, and the `cjdns` library available for import.
 
 Usage
 =======
 Usage is simple. First, import:
 
-    import cjdnsadmin
+    import cjdns
 
 Then, connect to the running cjdns instance. There are two ways to do this. The normal way is to use the `~/.cjdnsadmin` file:
 
-    cjdns = cjdnsadmin.connectWithAdminInfo()
+    cjdns = cjdns.connectWithAdminInfo()
 
 Or, if you have the IP, port and password and wish to ignore the `~/.cjdnsadmin` file for whatever reason:
 
-    cjdns = cjdnsadmin.connect(ip, port, password)
+    cjdns = cjdns.connect(ip, port, password)
 
 Once connected, you may call any of the [cjdns admin interface functions](https://github.com/cjdelisle/cjdns/blob/master/admin/README.md#cjdns-functions):
 
@@ -40,7 +40,7 @@ Once connected, you may call any of the [cjdns admin interface functions](https:
 
 Finally, there is a helper function that allows one to convert a cjdns public key into an IP address:
 
-    cjdnsadmin.PublicToIp6('1rfp3guz4jjhfu4dsu5mrz68f7fyp502wcttq6b78xdrjhd4ru80.k')
+    cjdns.PublicToIp6('1rfp3guz4jjhfu4dsu5mrz68f7fyp502wcttq6b78xdrjhd4ru80.k')
 
 
 License

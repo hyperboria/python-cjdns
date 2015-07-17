@@ -12,7 +12,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """A simple script to test if the library can be imported and connect"""
 
-import cjdnsadmin
+import cjdns
 
-cjdns = cjdnsadmin.connectWithAdminInfo()
+cjdns = cjdns.connectWithAdminInfo()
 cjdns.ping()

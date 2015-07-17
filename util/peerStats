@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import cjdnsadmin
+import cjdns
 import argparse
 try:
     from prettytable import PrettyTable
@@ -35,7 +35,7 @@ firstcolheader = 'Public Key'
 if not args.pubkeys:
     firstcolheader = 'cjdns IP'
 
-cjdns = cjdnsadmin.connectWithAdminInfo()
+cjdns = cjdns.connectWithAdminInfo()
 table = PrettyTable([
     firstcolheader,
     'state',
@@ -59,7 +59,7 @@ while more:
             user = peer['user']
         key = peer['publicKey']
         if not args.pubkeys:
-            key = cjdnsadmin.PublicToIp6(peer['publicKey'])
+            key = cjdns.PublicToIp6(peer['publicKey'])
         table.add_row([
             key,
             peer['state'],
