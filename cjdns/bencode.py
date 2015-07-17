@@ -44,7 +44,7 @@ def bencode(obj):
     if isinstance(obj, dict):
         res = "d"
         for key in sorted(obj.keys()):
-            if obj[key]:
+            if key in obj:
                 res += bencode(key) + bencode(obj[key])
         return res + "e"
 
