@@ -12,7 +12,7 @@
 
 from hashlib import sha512
 
-import base32
+from . import base32
 
 
 def to_ipv6(key):
