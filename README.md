@@ -40,7 +40,8 @@ Once connected, you may call any of the [cjdns admin interface functions](https:
 
 Finally, there is a helper function that allows one to convert a cjdns public key into an IP address:
 
-    cjdns.PublicToIp6('1rfp3guz4jjhfu4dsu5mrz68f7fyp502wcttq6b78xdrjhd4ru80.k')
+    from cjdns import key_utils
+    key_utils.to_ipv6('1rfp3guz4jjhfu4dsu5mrz68f7fyp502wcttq6b78xdrjhd4ru80.k')
 
 
 License
