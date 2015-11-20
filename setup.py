@@ -30,7 +30,7 @@ def readme(fname):
 
 setup(
     name='cjdns',
-    version='0.1.6',
+    version='0.2.1',
     description='A library to interact with the cjdns Admin Interface',
     long_description=readme('README.md'),
     url='https://github.com/hyperboria/python-cjdns',
