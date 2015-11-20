@@ -15,7 +15,7 @@ from hashlib import sha512
 import base32
 
 
-def get_ipv6(key):
+def to_ipv6(key):
     """Get IPv6 address from a public key."""
 
     if key[-2:] != '.k':
