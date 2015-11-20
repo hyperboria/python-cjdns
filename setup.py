@@ -32,7 +32,7 @@ setup(
     name='cjdns',
     version='0.2.1',
     description='A library to interact with the cjdns Admin Interface',
-    long_description=readme('README.md'),
+    long_description=readme('README.rst'),
     url='https://github.com/hyperboria/python-cjdns',
     author='Finn Herzfeld',
     author_email='finn@seattlemesh.net',
