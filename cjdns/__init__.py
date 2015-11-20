@@ -19,4 +19,4 @@ import cjdns
 cjdns = cjdns.connectWithAdminInfo()
 
 """
-from .cjdns import connect, connectWithAdminInfo, PublicToIp6
+from .cjdns import connect, connectWithAdminInfo

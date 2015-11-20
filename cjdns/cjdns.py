@@ -320,16 +320,3 @@ def Base32_decode(decodeme):
         raise ValueError("bits is %s and nextByte is %s" % (bits, nextByte))
 
     return memoryview(output)[0:outputIndex]
-
-
-def PublicToIp6(pubKey):
-    if pubKey[-2:] != ".k":
-        raise ValueError("key does not end with .k")
-    keyBytes = Base32_decode(pubKey[0:-2])
-    hashOne = sha512(keyBytes).digest()
-    hashTwo = sha512(hashOne).hexdigest()
-    first16 = hashTwo[0:32]
-    out = ''
-    for i in range(0, 8):
-        out += first16[i*4: i*4+4] + ":"
-    return out[:-1]
