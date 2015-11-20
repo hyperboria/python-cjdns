@@ -10,9 +10,9 @@
    :alt: Code Health
    :target: https://landscape.io/github/hyperboria/python-cjdns/master
 
-.. image:: https://img.shields.io/pypi/v/cjdnsadmin.svg
+.. image:: https://img.shields.io/pypi/v/cjdns.svg
    :alt: PyPI
-   :target: https://pypi.python.org/pypi/cjdnsadmin
+   :target: https://pypi.python.org/pypi/cjdns
 
 The cjdns python library doesn't support python3 and is a PITA to install, due
 to it's use of a modified bencode library which is still called "bencode", among
