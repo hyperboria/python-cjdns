@@ -34,6 +34,7 @@ setup(
     description='A library to interact with the cjdns Admin Interface',
     long_description=readme('README.rst'),
     url='https://github.com/hyperboria/python-cjdns',
+    bugtracker_url='https://github.com/hyperboria/python-cjdns/issues',
     author='Finn Herzfeld',
     author_email='finn@seattlemesh.net',
     license='GPLv3',
