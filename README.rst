@@ -29,7 +29,7 @@ But you could also clone it and run::
 
     python setup.py install
 
-Once it's installed, you'll find `peerStats` and `cexec` installed in your `$PATH`, and the `cjdns` library available for import.
+Once it's installed, you'll find ``peerStats`` and ``cexec`` installed in your ``$PATH``, and the ``cjdns`` library available for import.
 
 
 Usage
@@ -41,13 +41,13 @@ Usage is simple. First, import:
 
     import cjdns
 
-Then, connect to the running cjdns instance. There are two ways to do this. The normal way is to use the `~/.cjdnsadmin` file:
+Then, connect to the running cjdns instance. There are two ways to do this. The normal way is to use the ``~/.cjdnsadmin`` file:
 
 .. code:: python
 
     cjdns = cjdns.connectWithAdminInfo()
 
-Or, if you have the IP, port and password and wish to ignore the `~/.cjdnsadmin` file for whatever reason:
+Or, if you have the IP, port and password and wish to ignore the ``~/.cjdnsadmin`` file for whatever reason:
 
 .. code:: python
 
