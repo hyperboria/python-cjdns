@@ -47,7 +47,7 @@ Or, if you have the IP, port and password and wish to ignore the `~/.cjdnsadmin`
 
     cjdns = cjdns.connect(ip, port, password)
 
-Once connected, you may call any of the [cjdns admin interface functions](https://github.com/cjdelisle/cjdns/blob/master/admin/README.md#cjdns-functions):
+Once connected, you may call any of the `cjdns admin interface functions <https://github.com/cjdelisle/cjdns/blob/master/admin/README.md#cjdns-functions>`_:
 
     peerStats = cjdns.InterfaceController_peerStats()
 
