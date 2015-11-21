@@ -21,11 +21,11 @@ other things, so I'm cleaning it up.
 Installation
 ============
 
-The easiest way to install it is:
+The easiest way to install it is::
 
     pip install cjdns
 
-But you could also clone it and run:
+But you could also clone it and run::
 
     python setup.py install
 
@@ -35,23 +35,23 @@ Once it's installed, you'll find `peerStats` and `cexec` installed in your `$PAT
 Usage
 =====
 
-Usage is simple. First, import:
+Usage is simple. First, import::
 
     import cjdns
 
-Then, connect to the running cjdns instance. There are two ways to do this. The normal way is to use the `~/.cjdnsadmin` file:
+Then, connect to the running cjdns instance. There are two ways to do this. The normal way is to use the `~/.cjdnsadmin` file::
 
     cjdns = cjdns.connectWithAdminInfo()
 
-Or, if you have the IP, port and password and wish to ignore the `~/.cjdnsadmin` file for whatever reason:
+Or, if you have the IP, port and password and wish to ignore the `~/.cjdnsadmin` file for whatever reason::
 
     cjdns = cjdns.connect(ip, port, password)
 
-Once connected, you may call any of the `cjdns admin interface functions <https://github.com/cjdelisle/cjdns/blob/master/admin/README.md#cjdns-functions>`_:
+Once connected, you may call any of the `cjdns admin interface functions <https://github.com/cjdelisle/cjdns/blob/master/admin/README.md#cjdns-functions>`_::
 
     peerStats = cjdns.InterfaceController_peerStats()
 
-Finally, there is a helper function that allows one to convert a cjdns public key into an IP address:
+Finally, there is a helper function that allows one to convert a cjdns public key into an IP address::
 
     from cjdns import key_utils
     key_utils.to_ipv6('1rfp3guz4jjhfu4dsu5mrz68f7fyp502wcttq6b78xdrjhd4ru80.k')
