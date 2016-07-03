@@ -12,6 +12,7 @@ env:
   - TOXENV=py27
   - TOXENV=py33
   - TOXENV=py34
+  - TOXENV=py35
 
 notifications:
   webhooks: http://webhooks.meshwith.me:8080/webhooks/
