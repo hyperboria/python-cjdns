@@ -12,6 +12,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import cjdns
+from cjdns import key_utils
 import argparse
 try:
     from prettytable import PrettyTable
@@ -35,7 +36,7 @@ firstcolheader = 'Public Key'
 if not args.pubkeys:
     firstcolheader = 'cjdns IP'
 
-cjdns = cjdns.connectWithAdminInfo()
+connection = cjdns.connectWithAdminInfo()
 table = PrettyTable([
     firstcolheader,
     'state',
@@ -52,14 +53,14 @@ table = PrettyTable([
 i = 0
 more = True
 while more:
-    page = cjdns.InterfaceController_peerStats(i)
+    page = connection.InterfaceController_peerStats(i)
     for peer in page['peers']:
         user = "-"
         if "user" in peer:
             user = peer['user']
         key = peer['publicKey']
         if not args.pubkeys:
-            key = cjdns.PublicToIp6(peer['publicKey'])
+            key = key_utils.to_ipv6(peer['publicKey'])
         table.add_row([
             key,
             peer['state'],
