@@ -12,8 +12,8 @@
 
 
 # see util/Base32.h
-def decode(input):
-    output = bytearray(len(input))
+def decode(encoded):
+    output = bytearray(len(encoded))
     numForAscii = [
         99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
         99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
@@ -30,14 +30,14 @@ def decode(input):
     nextByte = 0
     bits = 0
 
-    while (inputIndex < len(input)):
-        o = ord(input[inputIndex])
+    while (inputIndex < len(encoded)):
+        o = ord(encoded[inputIndex])
         if (o & 0x80):
             raise ValueError
         b = numForAscii[o]
         inputIndex += 1
         if (b > 31):
-            raise ValueError("bad character " + input[inputIndex])
+            raise ValueError("bad character " + encoded[inputIndex])
 
         nextByte |= (b << bits)
         bits += 5

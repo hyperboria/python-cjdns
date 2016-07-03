@@ -27,7 +27,6 @@ except ImportError:
     import Queue as queue
 import random
 import string
-from hashlib import sha512
 from .bencode import bencode, bdecode
 
 BUFFER_SIZE = 69632
