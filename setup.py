@@ -45,5 +45,8 @@ setup(
     ],
     keywords='cjdns',
     packages=['cjdns'],
-    scripts=['util/peerStats']
+    scripts=['util/cexec', 'util/peerStats'],
+    install_requires=[
+        'prettytable'
+    ]
 )
