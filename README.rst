@@ -75,4 +75,4 @@ Same as cjdns, this is a GPLv3 project. Full text of the license is available [h
 Contributing
 ============
 
-I welcome pull requests, please make sure that everything you contribute is pep8 compliant and works on python 2.6, 2.7, 3.2, 3.3 and 3.4. There are some basic tests in place for these things via Travis, but they're not complete by any means.
+I welcome pull requests, please make sure that everything you contribute is pep8 compliant and works on python 2.6, 2.7, 3.3 and 3.4. There are some basic tests in place for these things via Travis, but they're not complete by any means.
