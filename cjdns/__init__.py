@@ -10,8 +10,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-"""cjdns
-Allows communication with an instance of cjdns via the admin/RPC port.
+"""Allows communication with an instance of cjdns via the admin/RPC port.
 
 Usage:
 
