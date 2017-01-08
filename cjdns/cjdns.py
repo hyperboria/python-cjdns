@@ -27,7 +27,12 @@ except ImportError:
     import Queue as queue
 import random
 import string
+import logging
+
 from .bencode import bencode, bdecode
+
+
+logger = logging.getLogger(__name__)
 
 BUFFER_SIZE = 69632
 KEEPALIVE_INTERVAL_SECONDS = 2
@@ -113,7 +118,7 @@ def _receiverThread(session):
             try:
                 benc = bdecode(data)
             except (KeyError, ValueError):
-                print("error decoding [" + data + "]")
+                logger.warning("error decoding [%s]", data)
                 continue
 
             if benc['txid'] == 'keepaliv':
@@ -121,11 +126,10 @@ def _receiverThread(session):
                     raise Exception("lost session")
                 timeOfLastRecv = time.time()
             else:
-                # print "putting to queue " + str(benc)
                 session.queue.put(benc)
 
     except KeyboardInterrupt:
-        print("interrupted")
+        logger.exception("interrupted")
         import thread
         thread.interrupt_main()
 
@@ -139,7 +143,6 @@ def _getMessage(session, txid):
             del session.messages[txid]
             return msg
         else:
-            # print "getting from queue"
             try:
                 # apparently any timeout at all allows the thread to be
                 # stopped but none make it unstoppable with ctrl+c
@@ -148,9 +151,8 @@ def _getMessage(session, txid):
                 continue
             if 'txid' in nextMessage:
                 session.messages[nextMessage['txid']] = nextMessage
-                # print "adding message [" + str(next) + "]"
             else:
-                print("message with no txid: %s" % nextMessage)
+                logger.info("message with no txid: %s" % nextMessage)
 
 
 def _functionFabric(func_name, argList, oargList, password):
@@ -256,7 +258,6 @@ def connect(ipAddr, port, password):
         session._functions += (
             func + "(" + ', '.join(funcArgs[func] + funcOargs_c[func]) + ")\n")
 
-    # print session.functions
     return session
 
 
@@ -269,7 +270,7 @@ def connectWithAdminInfo(path=None):
         with open(path, 'r') as adminInfo:
             data = json.load(adminInfo)
     except IOError:
-        print('~/.cjdnsadmin not found; using default credentials', file=sys.stderr)
+        logger.info('~/.cjdnsadmin not found; using default credentials', file=sys.stderr)
         data = {
             'password': 'NONE',
             'addr': '127.0.0.1',
