@@ -187,7 +187,8 @@ def connect(ipAddr, port, password):
     sock.send(b'd1:q4:pinge')
     data = sock.recv(BUFFER_SIZE)
     if not data.endswith(b'1:q4:ponge'):
-        raise exceptions.NotACjdnsAdminSocket("Looks like %s:%d is to a non-cjdns socket.", (ipAddr, port))
+        raise exceptions.NotACjdnsAdminSocket("Looks like %s:%d is to a non-cjdns socket.",
+                                              (ipAddr, port))
 
     # Get the functions and make the object
     page = 0
