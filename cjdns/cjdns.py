@@ -28,6 +28,7 @@ except ImportError:
 import random
 import string
 from .bencode import bencode, bdecode
+from . import exceptions
 
 BUFFER_SIZE = 69632
 KEEPALIVE_INTERVAL_SECONDS = 2
@@ -100,7 +101,7 @@ def _receiverThread(session):
         while True:
             if timeOfLastSend + KEEPALIVE_INTERVAL_SECONDS < time.time():
                 if timeOfLastRecv + 10 < time.time():
-                    raise Exception("ping timeout")
+                    raise exceptions.PingTimeout()
                 session.socket.send(
                     b'd1:q18:Admin_asyncEnabled4:txid8:keepalive')
                 timeOfLastSend = time.time()
@@ -118,7 +119,7 @@ def _receiverThread(session):
 
             if benc['txid'] == 'keepaliv':
                 if benc['asyncEnabled'] == 0:
-                    raise Exception("lost session")
+                    raise exceptions.SessionLost()
                 timeOfLastRecv = time.time()
             else:
                 # print "putting to queue " + str(benc)
@@ -186,9 +187,8 @@ def connect(ipAddr, port, password):
     sock.send(b'd1:q4:pinge')
     data = sock.recv(BUFFER_SIZE)
     if not data.endswith(b'1:q4:ponge'):
-        raise Exception(
-            "Looks like " + ipAddr + ":" + str(port) +
-            " is to a non-cjdns socket.")
+        raise exceptions.NotACjdnsAdminSocket("Looks like %s:%d is to a non-cjdns socket.",
+                                              (ipAddr, port))
 
     # Get the functions and make the object
     page = 0
@@ -241,8 +241,7 @@ def connect(ipAddr, port, password):
     # Check our password.
     ret = _callFunc(session, "ping", password, {})
     if 'error' in ret:
-        raise Exception(
-            "Connect failed, incorrect admin password?\n" + str(ret))
+        raise exceptions.InvalidAdminPassword(ret.get("error"))
 
     session._functions = ""
 
