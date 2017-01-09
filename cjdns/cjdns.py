@@ -89,7 +89,10 @@ def _callFunc(session, funcName, password, args):
 
     reqBenc = bencode(req)
     sock.send(bytearray(reqBenc, 'utf-8'))
-    return _getMessage(session, txid)
+    result = _getMessage(session, txid)
+    if "error" in result:
+        raise exceptions.CjdnsRpcError(result['error'])
+    return result
 
 
 def _receiverThread(session):
