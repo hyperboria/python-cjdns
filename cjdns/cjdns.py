@@ -118,7 +118,7 @@ def _receiverThread(session):
             try:
                 benc = bdecode(data)
             except (KeyError, ValueError):
-                logger.warning("error decoding [%s]", data)
+                logger.error("error decoding [%s]", data)
                 continue
 
             if benc['txid'] == 'keepaliv':
